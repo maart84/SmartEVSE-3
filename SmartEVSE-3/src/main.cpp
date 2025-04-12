@@ -2891,6 +2891,11 @@ void mqtt_receive_callback(const String topic, const String payload) {
         } else {
             CustomButton = false;
         }
+    } else if (topic == MQTTprefix + "/Set/CommTimeout") {
+        uint16_t RequestedCommTimeout = payload.toInt();
+        if (RequestedCommTimeout >= 10 && RequestedCommTimeout <= 600) {
+            COMM_TIMEOUT = RequestedCommTimeout;
+        } 
     } else if (topic == MQTTprefix + "/Set/CurrentOverride") {
         uint16_t RequestedCurrent = payload.toInt();
         if (RequestedCurrent == 0) {
@@ -3198,6 +3203,7 @@ void mqttPublishData() {
             MQTTclient.publish(MQTTprefix + "/EVCurrentL3", EVMeter.Irms[2], false, 0);
         }
         MQTTclient.publish(MQTTprefix + "/ESPTemp", TempEVSE, false, 0);
+        MQTTclient.publish(MQTTprefix + "/MainsMeterTimeout", MainsMeter.Timeout, false, 0);
         MQTTclient.publish(MQTTprefix + "/Mode", Access_bit == 0 ? "Off" : Mode > 3 ? "N/A" : StrMode[Mode], true, 0);
         MQTTclient.publish(MQTTprefix + "/MaxCurrent", MaxCurrent * 10, true, 0);
         MQTTclient.publish(MQTTprefix + "/CustomButton", CustomButton ? "On" : "Off", false, 0);
